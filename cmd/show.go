@@ -23,7 +23,7 @@ import (
 // showCmd represents the show command
 var showCmd = &cobra.Command{
 	Use:   "show",
-	Short: "A brief description of your command",
+	Short: "Show snippet description",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 

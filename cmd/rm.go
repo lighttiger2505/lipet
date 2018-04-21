@@ -23,7 +23,7 @@ import (
 // rmCmd represents the rm command
 var rmCmd = &cobra.Command{
 	Use:   "rm",
-	Short: "A brief description of your command",
+	Short: "Remove snippet",
 	Long: `A longer description that spans multiple lines and likely contains examples
 and usage of using your command. For example:
 
