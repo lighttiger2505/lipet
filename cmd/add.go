@@ -21,7 +21,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/mitchellh/go-homedir"
+	"github.com/lighttiger2505/lipet/internal/path"
 	"github.com/spf13/cobra"
 )
 
@@ -56,7 +56,7 @@ func add(cmd *cobra.Command, args []string) error {
 	fmt.Println("add called")
 
 	targetTime := time.Now()
-	targetPath, err := diaryPath(targetTime, diaryDirPath())
+	targetPath, err := path.NewSnippetPath(targetTime)
 	if err != nil {
 		return err
 	}
@@ -69,13 +69,6 @@ func add(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	// // Make diary file
-	// if !isFileExist(targetPath) {
-	// 	if err := makeFile(targetPath); err != nil {
-	// 		return fmt.Errorf("Failed make diary file. %s", err.Error())
-	// 	}
-	// }
-
 	// Open text editor
 	editorEnv := os.Getenv("EDITOR")
 	if editorEnv == "" {
@@ -86,24 +79,6 @@ func add(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Failed open editor. %s", err.Error())
 	}
 	return nil
-}
-
-func diaryDirPath() string {
-	home, _ := homedir.Dir()
-	diaryDirPath := filepath.Join(home, ".config", "lipet", "_post")
-	return diaryDirPath
-}
-
-func diaryPath(targetTime time.Time, dirPath string) (string, error) {
-	year, month, day := targetTime.Date()
-	// diaryDirPath := diaryDirPath()
-	diaryPath := filepath.Join(
-		dirPath,
-		fmt.Sprintf("%02d", year),
-		fmt.Sprintf("%02d", int(month)),
-		fmt.Sprintf("%s.md", fmt.Sprintf("%02d", day)),
-	)
-	return diaryPath, nil
 }
 
 func isFileExist(fPath string) bool {
@@ -118,11 +93,3 @@ func openEditor(program string, args ...string) error {
 	c.Stderr = os.Stderr
 	return c.Run()
 }
-
-// func makeFile(fPath string) error {
-// 	err := ioutil.WriteFile(fPath, []byte(""), 0644)
-// 	if err != nil {
-// 		return fmt.Errorf("Failed make file. %v", err.Error())
-// 	}
-// 	return nil
-// }
