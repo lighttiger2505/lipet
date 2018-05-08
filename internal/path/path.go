@@ -10,13 +10,13 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-func NewSnippetPath(targetTime time.Time) (string, error) {
+func NewSnippetPath(targetTime time.Time, title, fileType string) (string, error) {
 	dirPath := storeDirPath()
 	createdFileName, err := listDirFileNames(dirPath)
 	if err != nil {
 		return "", err
 	}
-	fileName := snippetFileName(targetTime, createdFileName, "", "")
+	fileName := snippetFileName(targetTime, createdFileName, title, fileType)
 	return filepath.Join(dirPath, fileName), nil
 }
 

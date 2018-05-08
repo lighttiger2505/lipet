@@ -38,6 +38,11 @@ to quickly create a Cobra application.`,
 	RunE: add,
 }
 
+var (
+	title    string
+	fileType string
+)
+
 func init() {
 	rootCmd.AddCommand(addCmd)
 
@@ -50,13 +55,16 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	addCmd.Flags().StringVarP(&title, "title", "t", "", "The snippet title")
+	addCmd.Flags().StringVarP(&fileType, "filetype", "f", "", "The snippet file type")
 }
 
 func add(cmd *cobra.Command, args []string) error {
-	fmt.Println("add called")
 
 	targetTime := time.Now()
-	targetPath, err := path.NewSnippetPath(targetTime)
+	fmt.Println(title)
+	fmt.Println(fileType)
+	targetPath, err := path.NewSnippetPath(targetTime, title, fileType)
 	if err != nil {
 		return err
 	}
