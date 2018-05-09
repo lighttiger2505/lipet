@@ -10,8 +10,9 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
+// NewSnippetPath get new snippet path
 func NewSnippetPath(targetTime time.Time, title, fileType string) (string, error) {
-	dirPath := storeDirPath()
+	dirPath := StoreDirPath()
 	createdFileName, err := listDirFileNames(dirPath)
 	if err != nil {
 		return "", err
@@ -20,7 +21,8 @@ func NewSnippetPath(targetTime time.Time, title, fileType string) (string, error
 	return filepath.Join(dirPath, fileName), nil
 }
 
-func storeDirPath() string {
+// StoreDirPath get snippet store directory path
+func StoreDirPath() string {
 	home, _ := homedir.Dir()
 	diaryDirPath := filepath.Join(home, ".config", "lipet", "_post")
 	return diaryDirPath

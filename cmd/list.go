@@ -16,7 +16,10 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"path/filepath"
 
+	"github.com/lighttiger2505/lipet/internal/path"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +33,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("list called")
-	},
+	RunE: list,
 }
 
 func init() {
@@ -47,4 +48,19 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// listCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func list(cmd *cobra.Command, args []string) error {
+	dirPath := path.StoreDirPath()
+
+	files, err := ioutil.ReadDir(dirPath)
+	if err != nil {
+		return fmt.Errorf("Failed read dir files. %s", err)
+	}
+
+	for _, file := range files {
+		fullpath := filepath.Join(dirPath, file.Name())
+		fmt.Println(fullpath)
+	}
+	return nil
 }
