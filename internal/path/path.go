@@ -28,6 +28,12 @@ func StoreDirPath() string {
 	return diaryDirPath
 }
 
+// SnippetPath get snippet path to specific ID
+func SnippetPath(snippetID string) string {
+	fileName := fmt.Sprintf("%s.yaml", snippetID)
+	return filepath.Join(StoreDirPath(), fileName)
+}
+
 func snippetFileName(targetTime time.Time, createdNames []string, suffix string, fileType string) string {
 	dateString := targetTime.Format("2006-01-02")
 
