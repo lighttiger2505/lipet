@@ -1,6 +1,7 @@
 package snippet
 
 import (
+	"crypto/sha1"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -10,7 +11,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/lighttiger2505/lipet/internal/path"
 	yaml "gopkg.in/yaml.v2"
 )
@@ -25,9 +25,12 @@ type Snippet struct {
 	UpdatedAt time.Time
 }
 
-// NewSnippetID generate snippet ID format of sha256
+// NewSnippetID generate snippet ID format of sha1
 func NewSnippetID() string {
-	return uuid.Must(uuid.NewRandom()).String()
+	h := sha1.New()
+	unixMilliSecStr := strconv.FormatInt(time.Now().UnixNano(), 10)
+	h.Write([]byte(unixMilliSecStr))
+	return fmt.Sprintf("%x", h.Sum(nil))
 }
 
 func isFileExist(fPath string) bool {
