@@ -16,10 +16,10 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
-	"path/filepath"
+	"strings"
 
-	"github.com/lighttiger2505/lipet/internal/path"
+	"github.com/lighttiger2505/lipet/internal/snippet"
+	"github.com/ryanuber/columnize"
 	"github.com/spf13/cobra"
 )
 
@@ -51,16 +51,27 @@ func init() {
 }
 
 func list(cmd *cobra.Command, args []string) error {
-	dirPath := path.StoreDirPath()
-
-	files, err := ioutil.ReadDir(dirPath)
+	snips, err := snippet.List()
 	if err != nil {
-		return fmt.Errorf("Failed read dir files. %s", err)
+		return err
 	}
 
-	for _, file := range files {
-		fullpath := filepath.Join(dirPath, file.Name())
-		fmt.Println(fullpath)
-	}
+	output := makeDisplaySnippet(snips)
+	result := columnize.SimpleFormat(output)
+	fmt.Println(result)
+
 	return nil
+}
+
+func makeDisplaySnippet(snips []*snippet.Snippet) []string {
+	var outs []string
+	for _, snip := range snips {
+		out := strings.Join([]string{
+			snip.ID,
+			snip.Title,
+			snip.FileType,
+		}, "|")
+		outs = append(outs, out)
+	}
+	return outs
 }

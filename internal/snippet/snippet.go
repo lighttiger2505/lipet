@@ -118,8 +118,21 @@ func Get(snippetID string) (*Snippet, error) {
 }
 
 // List created snipets
-func List() []*Snippet {
-	return []*Snippet{}
+func List() ([]*Snippet, error) {
+	snipFiles, err := path.ListSnippetFiles()
+	if err != nil {
+		return nil, err
+	}
+
+	var snips []*Snippet
+	for _, snipFile := range snipFiles {
+		snip, err := Get(snipFile)
+		if err != nil {
+			return nil, err
+		}
+		snips = append(snips, snip)
+	}
+	return snips, nil
 }
 
 // Random number state.

@@ -53,6 +53,10 @@ func snippetFileName(targetTime time.Time, createdNames []string, suffix string,
 	return snippetFileName
 }
 
+func ListSnippetFiles() ([]string, error) {
+	return listDirFileNames(StoreDirPath())
+}
+
 func listDirFileNames(dirPath string) ([]string, error) {
 	files, err := ioutil.ReadDir(dirPath)
 	if err != nil {
@@ -61,7 +65,9 @@ func listDirFileNames(dirPath string) ([]string, error) {
 
 	var names []string
 	for _, file := range files {
-		names = append(names, file.Name())
+		filename := file.Name()
+		name := strings.TrimSuffix(filename, filepath.Ext(filename))
+		names = append(names, name)
 	}
 	return names, nil
 }
