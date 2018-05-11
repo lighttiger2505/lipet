@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/lighttiger2505/lipet/internal/snippet"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +31,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("show called")
-	},
+	RunE: show,
 }
 
 func init() {
@@ -47,4 +46,65 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// showCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func show(cmd *cobra.Command, args []string) error {
+	// Check required
+	if len(args) < 1 {
+		return fmt.Errorf("Requirements arg. Prease input snippet hash")
+	}
+
+	// Validate snippet hash
+	hash := args[0]
+	result, err := snippet.ValidateSnippetHash(hash)
+	if err != nil {
+		return err
+	}
+	if !result {
+		return fmt.Errorf("Invalid snippt hash. Hash:%s", hash)
+	}
+
+	snip, err := getSnippet(hash)
+	if err != nil {
+		return err
+	}
+
+	base := `%s
+Title: %s
+FileType: %s
+CreatedAt: %v
+UpdatedAt: %v
+
+%s`
+	out := fmt.Sprintf(
+		base,
+		snip.Hash,
+		snip.Title,
+		snip.FileType,
+		snip.CreatedAt,
+		snip.UpdatedAt,
+		snip.Content,
+	)
+
+	fmt.Println(out)
+	return nil
+}
+
+func getSnippet(hash string) (*snippet.Snippet, error) {
+	switch len(hash) {
+	case 7:
+		snip, err := snippet.GetShorthand(hash)
+		if err != nil {
+			return nil, err
+		}
+		return snip, nil
+	case 40:
+		snip, err := snippet.Get(hash)
+		if err != nil {
+			return nil, err
+		}
+		return snip, nil
+	default:
+		return nil, nil
+	}
 }

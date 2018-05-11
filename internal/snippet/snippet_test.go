@@ -10,6 +10,35 @@ import (
 	"github.com/lighttiger2505/lipet/internal/snippet"
 )
 
+type ValidateSnippetHashTest struct {
+	Hash string
+	Want bool
+}
+
+var ValidateSnippetHashTests = []*ValidateSnippetHashTest{
+	&ValidateSnippetHashTest{
+		Hash: "9bb9339",
+		Want: true,
+	},
+	&ValidateSnippetHashTest{
+		Hash: "9bb9339d32344e3147c3792024a1530e8de10494",
+		Want: true,
+	},
+}
+
+func TestValidateSnippetHash(t *testing.T) {
+	for i, test := range ValidateSnippetHashTests {
+		got, err := snippet.ValidateSnippetHash(test.Hash)
+		if err != nil {
+			t.Fatalf("%d: Don't want error. %s", i, err)
+		}
+		want := test.Want
+		if got != want {
+			t.Fatalf("%d: Invalid return value \ngot: %v\nwant:%v", i, got, want)
+		}
+	}
+}
+
 func TestCreateAndGet(t *testing.T) {
 	createdAt, _ := time.Parse("2006-01-02", "2018-04-01")
 	updatedAt, _ := time.Parse("2006-01-02", "2018-04-02")

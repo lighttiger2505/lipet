@@ -7,7 +7,9 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -31,6 +33,14 @@ func (s *Snippet) GetHashShorthand() string {
 
 func snippetShorthand(hash string) string {
 	return hash[:7]
+}
+
+func ValidateSnippetHash(hash string) (bool, error) {
+	matched, err := regexp.MatchString("[0-9a-f]{7,40}", hash)
+	if err != nil {
+		return false, fmt.Errorf("Failed validate snippet hash. Hash:%s %s", hash, err)
+	}
+	return matched, nil
 }
 
 // NewSnippetHash generate snippet hash format of sha1
@@ -98,8 +108,24 @@ func read(r io.Reader) (*Snippet, error) {
 	return snippet, nil
 }
 
-// Get created snippet from specific ID
-func Get(snippetID string) (*Snippet, error) {
+// GetShorthand get create snippet data with shorthand snippet hash
+func GetShorthand(shorthandHash string) (*Snippet, error) {
+	snipFiles, err := path.ListSnippetFiles()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, snipFile := range snipFiles {
+		if strings.HasPrefix(snipFile, shorthandHash) {
+			snip, err := Get(snipFile)
+			if err != nil {
+				return nil, err
+			}
+			return snip, nil
+		}
+	}
+	return nil, nil
+}
 
 // Get created snippet from specific snippet hash
 func Get(hash string) (*Snippet, error) {
