@@ -16,12 +16,13 @@ package cmd
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"time"
 
-	"github.com/lighttiger2505/lipet/internal/path"
+	"github.com/lighttiger2505/lipet/internal/snippet"
 	"github.com/spf13/cobra"
 )
 
@@ -60,33 +61,52 @@ func init() {
 }
 
 func add(cmd *cobra.Command, args []string) error {
-
-	targetTime := time.Now()
-	fmt.Println(title)
-	fmt.Println(fileType)
-	targetPath, err := path.NewSnippetPath(targetTime, title, fileType)
-	if err != nil {
-		return err
-	}
-
-	// Make directory
-	targetDirPath := filepath.Dir(targetPath)
-	if !isFileExist(targetDirPath) {
-		if err := os.MkdirAll(targetDirPath, 0755); err != nil {
-			return fmt.Errorf("Failed make diary dir. %s", err.Error())
-		}
-	}
+	tmpfile := getTempFile("", "lipet", fileType)
+	defer os.Remove(tmpfile.Name())
 
 	// Open text editor
 	editorEnv := os.Getenv("EDITOR")
 	if editorEnv == "" {
 		editorEnv = "vim"
 	}
-	err = openEditor(editorEnv, targetPath)
-	if err != nil {
-		return fmt.Errorf("Failed open editor. %s", err.Error())
+	if err := openEditor(editorEnv, tmpfile.Name()); err != nil {
+		return fmt.Errorf("Failed open editor. %s", err)
 	}
+
+	b, err := ioutil.ReadAll(tmpfile)
+	if err != nil {
+		return fmt.Errorf("Failed read temp snippet file. %s", err)
+	}
+	fmt.Println("readed")
+
+	now := time.Now()
+	snip := &snippet.Snippet{
+		ID:        snippet.NewSnippetID(),
+		Title:     title,
+		FileType:  fileType,
+		Content:   string(b),
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+	fmt.Println("created. ", snip.ID)
+
+	snippet.Create(snip)
 	return nil
+}
+
+func getTempFile(dir, prefix, fileType string) *os.File {
+	if fileType != "" {
+		tmpfile, err := snippet.TempFile("", "example", fileType)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return tmpfile
+	}
+	tmpfile, err := ioutil.TempFile("", "example")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return tmpfile
 }
 
 func isFileExist(fPath string) bool {
