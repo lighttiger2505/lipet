@@ -67,7 +67,7 @@ func makeDisplaySnippet(snips []*snippet.Snippet) []string {
 	var outs []string
 	for _, snip := range snips {
 		out := strings.Join([]string{
-			snip.ID,
+			snip.GetHashShorthand(),
 			snip.Title,
 			snip.FileType,
 		}, "|")

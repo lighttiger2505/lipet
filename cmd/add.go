@@ -81,14 +81,14 @@ func add(cmd *cobra.Command, args []string) error {
 
 	now := time.Now()
 	snip := &snippet.Snippet{
-		ID:        snippet.NewSnippetID(),
+		Hash:      snippet.NewSnippetHash(),
 		Title:     title,
 		FileType:  fileType,
 		Content:   string(b),
 		CreatedAt: now,
 		UpdatedAt: now,
 	}
-	fmt.Println("created. ", snip.ID)
+	fmt.Println("created. ", snip.Hash)
 
 	snippet.Create(snip)
 	return nil

@@ -15,7 +15,7 @@ func TestCreateAndGet(t *testing.T) {
 	updatedAt, _ := time.Parse("2006-01-02", "2018-04-02")
 
 	snip := &snippet.Snippet{
-		ID:        "idhoge",
+		Hash:      "idhoge",
 		Title:     "titlehoge",
 		FileType:  "filetypehoge",
 		Content:   "contenthoge",
@@ -25,10 +25,10 @@ func TestCreateAndGet(t *testing.T) {
 	if err := snippet.Create(snip); err != nil {
 		t.Fatal(err)
 	}
-	snippetPath := path.SnippetPath(snip.ID)
+	snippetPath := path.SnippetPath(snip.Hash)
 	defer os.Remove(snippetPath)
 
-	got, err := snippet.Get(snip.ID)
+	got, err := snippet.Get(snip.Hash)
 	if err != nil {
 		t.Fatal(err)
 	}

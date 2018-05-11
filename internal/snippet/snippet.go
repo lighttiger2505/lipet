@@ -17,7 +17,7 @@ import (
 
 // Snippet snippet data
 type Snippet struct {
-	ID        string
+	Hash      string
 	Title     string
 	FileType  string
 	Content   string
@@ -25,8 +25,16 @@ type Snippet struct {
 	UpdatedAt time.Time
 }
 
-// NewSnippetID generate snippet ID format of sha1
-func NewSnippetID() string {
+func (s *Snippet) GetHashShorthand() string {
+	return snippetShorthand(s.Hash)
+}
+
+func snippetShorthand(hash string) string {
+	return hash[:7]
+}
+
+// NewSnippetHash generate snippet hash format of sha1
+func NewSnippetHash() string {
 	h := sha1.New()
 	unixMilliSecStr := strconv.FormatInt(time.Now().UnixNano(), 10)
 	h.Write([]byte(unixMilliSecStr))
@@ -52,7 +60,7 @@ func write(writer io.Writer, snippet *Snippet) error {
 
 // Create new snippet
 func Create(snippet *Snippet) error {
-	snippetPath := path.SnippetPath(snippet.ID)
+	snippetPath := path.SnippetPath(snippet.Hash)
 	if isFileExist(snippetPath) {
 		return fmt.Errorf("Dose exist snippet file. Path:%s", snippetPath)
 	}
@@ -92,8 +100,11 @@ func read(r io.Reader) (*Snippet, error) {
 
 // Get created snippet from specific ID
 func Get(snippetID string) (*Snippet, error) {
+
+// Get created snippet from specific snippet hash
+func Get(hash string) (*Snippet, error) {
 	// Check snippet is exist
-	snippetPath := path.SnippetPath(snippetID)
+	snippetPath := path.SnippetPath(hash)
 	if !isFileExist(snippetPath) {
 		return nil, fmt.Errorf("Not found snippet. Path:%s", snippetPath)
 	}
