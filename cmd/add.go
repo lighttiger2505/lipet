@@ -110,11 +110,6 @@ func getTempFile(dir, prefix, fileType string) *os.File {
 	return tmpfile
 }
 
-func isFileExist(fPath string) bool {
-	_, err := os.Stat(fPath)
-	return err == nil || !os.IsNotExist(err)
-}
-
 func openEditor(program string, args ...string) error {
 	c := exec.Command(program, args...)
 	c.Stdin = os.Stdin
