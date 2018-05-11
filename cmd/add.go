@@ -95,14 +95,15 @@ func add(cmd *cobra.Command, args []string) error {
 }
 
 func getTempFile(dir, prefix, fileType string) *os.File {
+	tempPrefix := "lipet"
 	if fileType != "" {
-		tmpfile, err := snippet.TempFile("", "example", fileType)
+		tmpfile, err := snippet.TempFile("", tempPrefix, fileType)
 		if err != nil {
 			log.Fatal(err)
 		}
 		return tmpfile
 	}
-	tmpfile, err := ioutil.TempFile("", "example")
+	tmpfile, err := ioutil.TempFile("", tempPrefix)
 	if err != nil {
 		log.Fatal(err)
 	}
