@@ -15,6 +15,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/lighttiger2505/lipet/internal/snippet"
@@ -67,6 +68,10 @@ func show(cmd *cobra.Command, args []string) error {
 	snip, err := getSnippet(hash)
 	if err != nil {
 		return err
+	}
+
+	if snip == nil {
+		return errors.New("Not found snippet.")
 	}
 
 	base := `%s

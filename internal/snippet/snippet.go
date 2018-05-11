@@ -124,6 +124,7 @@ func GetShorthand(shorthandHash string) (*Snippet, error) {
 			return snip, nil
 		}
 	}
+	// TODO Return special error for not found snippet
 	return nil, nil
 }
 
@@ -132,7 +133,8 @@ func Get(hash string) (*Snippet, error) {
 	// Check snippet is exist
 	snippetPath := path.SnippetPath(hash)
 	if !isFileExist(snippetPath) {
-		return nil, fmt.Errorf("Not found snippet. Path:%s", snippetPath)
+		// TODO Return special error for not found snippet
+		return nil, nil
 	}
 
 	// Open snippet file
