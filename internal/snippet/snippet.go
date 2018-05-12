@@ -71,13 +71,13 @@ func write(writer io.Writer, snippet *Snippet) error {
 func Create(snippet *Snippet) error {
 	snippetPath := path.SnippetPath(snippet.Hash)
 	if isFileExist(snippetPath) {
-		return fmt.Errorf("Dose exist snippet file. Path:%s", snippetPath)
+		return fmt.Errorf("Dose exist snippet. Path:%s", snippetPath)
 	}
 
 	// Open new snippet file
 	file, err := os.OpenFile(snippetPath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
-		return fmt.Errorf("Failed create new snippet file. %s", err)
+		return fmt.Errorf("Failed create new snippet. %s", err)
 	}
 	defer func() {
 		if cerr := file.Close(); err != nil {
