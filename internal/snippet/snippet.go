@@ -109,6 +109,25 @@ func read(r io.Reader) (*Snippet, error) {
 	return snippet, nil
 }
 
+func Get(hash string) (*Snippet, error) {
+	switch len(hash) {
+	case 7:
+		snip, err := GetShorthand(hash)
+		if err != nil {
+			return nil, err
+		}
+		return snip, nil
+	case 40:
+		snip, err := Get(hash)
+		if err != nil {
+			return nil, err
+		}
+		return snip, nil
+	default:
+		return nil, nil
+	}
+}
+
 // GetShorthand get create snippet data with shorthand snippet hash
 func GetShorthand(shorthandHash string) (*Snippet, error) {
 	snipFiles, err := path.ListSnippetFiles()
@@ -118,7 +137,7 @@ func GetShorthand(shorthandHash string) (*Snippet, error) {
 
 	for _, snipFile := range snipFiles {
 		if strings.HasPrefix(snipFile, shorthandHash) {
-			snip, err := Get(snipFile)
+			snip, err := GetFull(snipFile)
 			if err != nil {
 				return nil, err
 			}
@@ -129,8 +148,8 @@ func GetShorthand(shorthandHash string) (*Snippet, error) {
 	return nil, nil
 }
 
-// Get created snippet from specific snippet hash
-func Get(hash string) (*Snippet, error) {
+// GetFull created snippet from specific snippet hash
+func GetFull(hash string) (*Snippet, error) {
 	// Check snippet is exist
 	snippetPath := path.SnippetPath(hash)
 	if !isFileExist(snippetPath) {
@@ -166,7 +185,7 @@ func List() ([]*Snippet, error) {
 
 	var snips []*Snippet
 	for _, snipFile := range snipFiles {
-		snip, err := Get(snipFile)
+		snip, err := GetFull(snipFile)
 		if err != nil {
 			return nil, err
 		}

@@ -65,7 +65,7 @@ func show(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Invalid snippt hash. Hash:%s", hash)
 	}
 
-	snip, err := getSnippet(hash)
+	snip, err := snippet.Get(hash)
 	if err != nil {
 		return err
 	}
@@ -93,23 +93,4 @@ UpdatedAt: %v
 
 	fmt.Println(out)
 	return nil
-}
-
-func getSnippet(hash string) (*snippet.Snippet, error) {
-	switch len(hash) {
-	case 7:
-		snip, err := snippet.GetShorthand(hash)
-		if err != nil {
-			return nil, err
-		}
-		return snip, nil
-	case 40:
-		snip, err := snippet.Get(hash)
-		if err != nil {
-			return nil, err
-		}
-		return snip, nil
-	default:
-		return nil, nil
-	}
 }

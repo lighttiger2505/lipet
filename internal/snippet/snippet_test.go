@@ -57,7 +57,7 @@ func TestCreateAndGet(t *testing.T) {
 	snippetPath := path.SnippetPath(snip.Hash)
 	defer os.Remove(snippetPath)
 
-	got, err := snippet.Get(snip.Hash)
+	got, err := snippet.GetFull(snip.Hash)
 	if err != nil {
 		t.Fatal(err)
 	}
