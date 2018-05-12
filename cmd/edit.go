@@ -18,7 +18,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"os"
 	"time"
 
 	"github.com/lighttiger2505/lipet/internal/editor"
@@ -85,11 +84,7 @@ func edit(cmd *cobra.Command, args []string) error {
 	}
 
 	// Open text editor
-	editorEnv := os.Getenv("EDITOR")
-	if editorEnv == "" {
-		editorEnv = "vim"
-	}
-	if err := editor.OpenEditor(editorEnv, tmpfile); err != nil {
+	if err := editor.OpenEditor(tmpfile); err != nil {
 		return fmt.Errorf("Failed open editor. %s", err)
 	}
 

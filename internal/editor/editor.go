@@ -30,8 +30,13 @@ func GetTempFile(dir, prefix, fileType string) string {
 	return tmpfile.Name()
 }
 
-func OpenEditor(program string, args ...string) error {
-	c := exec.Command(program, args...)
+func OpenEditor(args ...string) error {
+	editorEnv := os.Getenv("EDITOR")
+	if editorEnv == "" {
+		editorEnv = "vim"
+	}
+
+	c := exec.Command(editorEnv, args...)
 	c.Stdin = os.Stdin
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
