@@ -17,11 +17,10 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
-	"os/exec"
 	"time"
 
+	"github.com/lighttiger2505/lipet/internal/editor"
 	"github.com/lighttiger2505/lipet/internal/snippet"
 	"github.com/spf13/cobra"
 )
@@ -61,7 +60,7 @@ func init() {
 }
 
 func add(cmd *cobra.Command, args []string) error {
-	tmpfile := getTempFile("", "lipet", snippet.GetFileExtension(fileType))
+	tmpfile := editor.GetTempFile("", "lipet", snippet.GetFileExtension(fileType))
 	defer os.Remove(tmpfile.Name())
 
 	// Open text editor
@@ -69,7 +68,7 @@ func add(cmd *cobra.Command, args []string) error {
 	if editorEnv == "" {
 		editorEnv = "vim"
 	}
-	if err := openEditor(editorEnv, tmpfile.Name()); err != nil {
+	if err := editor.OpenEditor(editorEnv, tmpfile.Name()); err != nil {
 		return fmt.Errorf("Failed open editor. %s", err)
 	}
 
@@ -92,28 +91,4 @@ func add(cmd *cobra.Command, args []string) error {
 
 	snippet.Create(snip)
 	return nil
-}
-
-func getTempFile(dir, prefix, fileType string) *os.File {
-	tempPrefix := "lipet"
-	if fileType != "" {
-		tmpfile, err := snippet.TempFile("", tempPrefix, fileType)
-		if err != nil {
-			log.Fatal(err)
-		}
-		return tmpfile
-	}
-	tmpfile, err := ioutil.TempFile("", tempPrefix)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return tmpfile
-}
-
-func openEditor(program string, args ...string) error {
-	c := exec.Command(program, args...)
-	c.Stdin = os.Stdin
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
-	return c.Run()
 }
