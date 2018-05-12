@@ -116,7 +116,7 @@ func Get(hash string) (*Snippet, error) {
 		}
 		return snip, nil
 	case 40:
-		snip, err := Get(hash)
+		snip, err := GetFull(hash)
 		if err != nil {
 			return nil, err
 		}
