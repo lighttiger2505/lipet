@@ -15,8 +15,14 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"time"
 
+	"github.com/lighttiger2505/lipet/internal/editor"
+	"github.com/lighttiger2505/lipet/internal/snippet"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +36,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("edit called")
-	},
+	RunE: edit,
 }
 
 func init() {
@@ -47,4 +51,61 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// editCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func edit(cmd *cobra.Command, args []string) error {
+	// Check required
+	if len(args) < 1 {
+		return fmt.Errorf("Requirements arg. Prease input snippet hash")
+	}
+
+	// Validate snippet hash
+	hash := args[0]
+	result, err := snippet.ValidateSnippetHash(hash)
+	if err != nil {
+		return err
+	}
+	if !result {
+		return fmt.Errorf("Invalid snippt hash. Hash:%s", hash)
+	}
+
+	snip, err := snippet.Get(hash)
+	if err != nil {
+		return err
+	}
+
+	if snip == nil {
+		return errors.New("Not found snippet.")
+	}
+
+	// Create temp file
+	tmpfile := editor.GetTempFile("", "lipet", snippet.GetFileExtension(snip.FileType))
+	if err = ioutil.WriteFile(tmpfile, []byte(snip.Content), 0644); err != nil {
+		return err
+	}
+
+	// Open text editor
+	editorEnv := os.Getenv("EDITOR")
+	if editorEnv == "" {
+		editorEnv = "vim"
+	}
+	if err := editor.OpenEditor(editorEnv, tmpfile); err != nil {
+		return fmt.Errorf("Failed open editor. %s", err)
+	}
+
+	b, err := ioutil.ReadFile(tmpfile)
+	if err != nil {
+		return fmt.Errorf("Failed read temp snippet file. %s", err)
+	}
+
+	now := time.Now()
+	snip.Content = string(b)
+	snip.UpdatedAt = now
+
+	if err := snippet.Update(snip); err != nil {
+		return err
+	}
+	fmt.Println(snip.Hash)
+
+	return nil
 }
