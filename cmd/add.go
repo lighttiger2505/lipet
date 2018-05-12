@@ -77,7 +77,6 @@ func add(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return fmt.Errorf("Failed read temp snippet file. %s", err)
 	}
-	fmt.Println("readed")
 
 	now := time.Now()
 	snip := &snippet.Snippet{
@@ -89,7 +88,7 @@ func add(cmd *cobra.Command, args []string) error {
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
-	fmt.Println("created. ", snip.Hash)
+	fmt.Println(snip.Hash)
 
 	snippet.Create(snip)
 	return nil
