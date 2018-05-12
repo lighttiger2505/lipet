@@ -2,8 +2,6 @@
 
 temp snippet manager
 
----
-
 ## Feature
 
 The lipet command provides persistent short-term memory.
