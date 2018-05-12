@@ -12,20 +12,22 @@ import (
 	"time"
 )
 
-func GetTempFile(dir, prefix, fileType string) *os.File {
+func GetTempFile(dir, prefix, fileType string) string {
 	tempPrefix := "lipet"
 	if fileType != "" {
 		tmpfile, err := TempFile("", tempPrefix, fileType)
+		defer tmpfile.Close()
 		if err != nil {
 			log.Fatal(err)
 		}
-		return tmpfile
+		return tmpfile.Name()
 	}
 	tmpfile, err := ioutil.TempFile("", tempPrefix)
+	defer tmpfile.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return tmpfile
+	return tmpfile.Name()
 }
 
 func OpenEditor(program string, args ...string) error {

@@ -61,18 +61,17 @@ func init() {
 
 func add(cmd *cobra.Command, args []string) error {
 	tmpfile := editor.GetTempFile("", "lipet", snippet.GetFileExtension(fileType))
-	defer os.Remove(tmpfile.Name())
 
 	// Open text editor
 	editorEnv := os.Getenv("EDITOR")
 	if editorEnv == "" {
 		editorEnv = "vim"
 	}
-	if err := editor.OpenEditor(editorEnv, tmpfile.Name()); err != nil {
+	if err := editor.OpenEditor(editorEnv, tmpfile); err != nil {
 		return fmt.Errorf("Failed open editor. %s", err)
 	}
 
-	b, err := ioutil.ReadAll(tmpfile)
+	b, err := ioutil.ReadFile(tmpfile)
 	if err != nil {
 		return fmt.Errorf("Failed read temp snippet file. %s", err)
 	}
