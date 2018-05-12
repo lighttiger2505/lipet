@@ -191,3 +191,28 @@ func List() ([]*Snippet, error) {
 	}
 	return snips, nil
 }
+
+// Create new snippet
+func Update(snippet *Snippet) error {
+	snippetPath := path.SnippetPath(snippet.Hash)
+	if !isFileExist(snippetPath) {
+		return fmt.Errorf("Now found snippet. Path:%s", snippetPath)
+	}
+
+	// Open new snippet file
+	file, err := os.OpenFile(snippetPath, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return fmt.Errorf("Failed update snippet. %s", err)
+	}
+	defer func() {
+		if cerr := file.Close(); err != nil {
+			err = cerr
+		}
+	}()
+
+	// Write snippet
+	if err := write(file, snippet); err != nil {
+		return err
+	}
+	return nil
+}
