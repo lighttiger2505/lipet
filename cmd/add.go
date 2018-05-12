@@ -87,8 +87,10 @@ func add(cmd *cobra.Command, args []string) error {
 		CreatedAt:     now,
 		UpdatedAt:     now,
 	}
-	fmt.Println(snip.Hash)
 
-	snippet.Create(snip)
+	if err := snippet.Create(snip); err != nil {
+		return err
+	}
+	fmt.Println(snip.Hash)
 	return nil
 }
