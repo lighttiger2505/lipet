@@ -15,7 +15,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"time"
@@ -71,10 +70,6 @@ func edit(cmd *cobra.Command, args []string) error {
 	snip, err := snippet.Get(hash)
 	if err != nil {
 		return err
-	}
-
-	if snip == nil {
-		return errors.New("Not found snippet.")
 	}
 
 	// Create temp file

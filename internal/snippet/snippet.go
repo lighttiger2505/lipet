@@ -2,6 +2,7 @@ package snippet
 
 import (
 	"crypto/sha1"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -122,7 +123,7 @@ func Get(hash string) (*Snippet, error) {
 		}
 		return snip, nil
 	default:
-		return nil, nil
+		return nil, errors.New("Not found snippet")
 	}
 }
 
