@@ -19,12 +19,13 @@ import (
 
 // Snippet snippet data
 type Snippet struct {
-	Hash      string
-	Title     string
-	FileType  string
-	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Hash          string
+	Title         string
+	FileType      string
+	FileExtension string
+	Content       string
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (s *Snippet) GetHashShorthand() string {

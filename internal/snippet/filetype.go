@@ -104,6 +104,10 @@ func matchFileExtension(val string) *Filetype {
 }
 
 func GetFiletype(val string) string {
+	if val == "" {
+		return ""
+	}
+
 	matchedFiletype := matchFiletype(val)
 	if matchedFiletype != nil {
 		return matchedFiletype.Type
@@ -117,6 +121,10 @@ func GetFiletype(val string) string {
 }
 
 func GetFileExtension(val string) string {
+	if val == "" {
+		return ""
+	}
+
 	matchedFiletype := matchFiletype(val)
 	if matchedFiletype != nil {
 		return matchedFiletype.Extension

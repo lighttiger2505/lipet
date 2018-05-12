@@ -17,6 +17,7 @@ var GetFileExtensionTests = []*GetFileExtensionTest{
 	&GetFileExtensionTest{Arg: "vimscript", Want: "vim"},
 	&GetFileExtensionTest{Arg: "Vim script", Want: "vim"},
 	&GetFileExtensionTest{Arg: "hoge", Want: "hoge"},
+	&GetFileExtensionTest{Arg: "", Want: ""},
 }
 
 func TestGetFileExtension(t *testing.T) {
@@ -40,6 +41,7 @@ var GetFiletypeTests = []*GetFiletypeTest{
 	&GetFiletypeTest{Arg: "vimscript", Want: "Vimscript"},
 	&GetFiletypeTest{Arg: "Vim script", Want: "Vimscript"},
 	&GetFiletypeTest{Arg: "hoge", Want: ""},
+	&GetFiletypeTest{Arg: "", Want: ""},
 }
 
 func TestGetFiletype(t *testing.T) {

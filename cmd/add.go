@@ -61,7 +61,7 @@ func init() {
 }
 
 func add(cmd *cobra.Command, args []string) error {
-	tmpfile := getTempFile("", "lipet", fileType)
+	tmpfile := getTempFile("", "lipet", snippet.GetFileExtension(fileType))
 	defer os.Remove(tmpfile.Name())
 
 	// Open text editor
@@ -81,12 +81,13 @@ func add(cmd *cobra.Command, args []string) error {
 
 	now := time.Now()
 	snip := &snippet.Snippet{
-		Hash:      snippet.NewSnippetHash(),
-		Title:     title,
-		FileType:  fileType,
-		Content:   string(b),
-		CreatedAt: now,
-		UpdatedAt: now,
+		Hash:          snippet.NewSnippetHash(),
+		Title:         title,
+		FileType:      snippet.GetFiletype(fileType),
+		FileExtension: snippet.GetFileExtension(fileType),
+		Content:       string(b),
+		CreatedAt:     now,
+		UpdatedAt:     now,
 	}
 	fmt.Println("created. ", snip.Hash)
 
