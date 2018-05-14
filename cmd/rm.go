@@ -17,6 +17,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/lighttiger2505/lipet/internal/snippet"
 	"github.com/spf13/cobra"
 )
 
@@ -30,9 +31,7 @@ and usage of using your command. For example:
 Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("rm called")
-	},
+	RunE: remove,
 }
 
 func init() {
@@ -47,4 +46,26 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// rmCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+func remove(cmd *cobra.Command, args []string) error {
+	// Check required
+	if len(args) < 1 {
+		return fmt.Errorf("Requirements arg. Prease input snippet hash")
+	}
+
+	// Validate snippet hash
+	hash := args[0]
+	result, err := snippet.ValidateSnippetHash(hash)
+	if err != nil {
+		return err
+	}
+	if !result {
+		return fmt.Errorf("Invalid snippt hash. Hash:%s", hash)
+	}
+
+	if err := snippet.Remove(hash); err != nil {
+		return err
+	}
+	return nil
 }

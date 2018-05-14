@@ -16,6 +16,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+var SHORTHAND_HASH_LENGTH int = 7
+
 // Snippet snippet data
 type Snippet struct {
 	Hash          string
@@ -123,7 +125,7 @@ func Get(hash string) (*Snippet, error) {
 		}
 		return snip, nil
 	default:
-		return nil, errors.New("Not found snippet")
+		return nil, errors.New("Invalid hash")
 	}
 }
 
@@ -214,6 +216,34 @@ func Update(snippet *Snippet) error {
 	// Write snippet
 	if err := write(file, snippet); err != nil {
 		return err
+	}
+	return nil
+}
+
+// Remove created snippet
+func Remove(hash string) error {
+	realHash := hash
+	if len(hash) == 7 {
+		snipFiles, err := path.ListSnippetFiles()
+		if err != nil {
+			return err
+		}
+
+		for _, snipFile := range snipFiles {
+			if strings.HasPrefix(snipFile, hash) {
+				realHash = snipFile
+				break
+			}
+		}
+	}
+
+	snippetPath := path.SnippetPath(realHash)
+	if !isFileExist(snippetPath) {
+		return fmt.Errorf("Now found snippet. Path:%s", snippetPath)
+	}
+
+	if err := os.Remove(snippetPath); err != nil {
+		return fmt.Errorf("Failed remove snippet. %s", err)
 	}
 	return nil
 }
