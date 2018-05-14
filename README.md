@@ -1,5 +1,7 @@
 # lipet
 
+![lipet build](https://travis-ci.org/lighttiger2505/lipet.svg?branch=master)
+
 temp snippet manager
 
 ## Feature
