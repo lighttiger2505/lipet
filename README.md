@@ -1,6 +1,7 @@
 # lipet
 
 ![lipet build](https://travis-ci.org/lighttiger2505/lipet.svg?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/lighttiger2505/lipet/badge.svg)](https://coveralls.io/github/lighttiger2505/lipet)
 
 temp snippet manager
 
